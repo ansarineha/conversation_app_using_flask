@@ -7,7 +7,7 @@ How to run application in your system:
    > py -m venv env
 2. Now activate the virtual environment by using.
    > env/Scripts/activate
-   (this will activate the virtual environment on your system)
+   (this should activate the virtual environment on your system)
 3. Install all the dependencies.
    All the dependencies which project requires are consolidated in requirements.txt file, so to install them simply use.
    > pip install -r requirements.txt
