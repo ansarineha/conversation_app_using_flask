@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+    <head> 
+        <title> Chat </title>
+        <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+        <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+        <!------ Include the above in your HEAD tag ---------->
+    </head>
+    <body>
+        <div class="container">    
+            <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">                    
+                <div class="panel panel-info" >
+                        <div class="panel-heading">
+                            <div class="panel-title">Start chatting...</div>
+                        </div>    
+                        <div id='messages'></div>
+                        <div style="padding-top:30px" class="panel-body" >
+                            <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
+                              <form id="message_input_form" class="form-horizontal" role="form">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="message_input" placeholder="Enter your message">
+                                    <button type="submit" class="btn btn-primary">Send</button>
+                                </div>
+                            </form>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </body>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
+    <script>
+        const socket = io.connect("http://127.0.0.1:5000");
+
+        socket.on('connect', function() {
+               console.log('connected');
+          });
+
+        let message_input = document.getElementById('message_input');
+        document.getElementById('message_input_form').onsubmit = function (e){
+            e.preventDefault();
+            let message = message_input.value.trim();
+            const newNode=document.createElement('div');
+            newNode.innerHTML = message;
+            document.getElementById('messages').appendChild(newNode);
+            if (message.length) {
+                console.log(message)
+                socket.emit('send_message',{
+                    message:message
+                })
+            }
+            message_input.value=''
+            message_input.focus();
+        };
+        
+        var i=0;
+        socket.on('rec_msg', function(data) {
+            console.log(data['message'])
+            var response_list = ["What is your name?","What is your Email?","What is your Address?","How are you?","What is your query about?","Thank You we will get back to you!"]
+            const newNode=document.createElement('div');
+            if(response_list[i]){
+                newNode.innerHTML = response_list[i];
+                document.getElementById('messages').appendChild(newNode);
+                i++;
+            }
+            else{
+                newNode.innerHTML = "Sorry I cannot understand you..";
+                document.getElementById('messages').appendChild(newNode);
+                i++;
+            }
+        })  
+        </script>
+        <script type="text/javascript">
+            setTimeout(function () { 
+              location.reload();
+            }, 30 * 1000);
+
+        </script>
+        </html>
